@@ -1,0 +1,71 @@
+-- USERS TABLE (Authentication with role-based access)
+CREATE TABLE Users (
+    UserID INT AUTO_INCREMENT PRIMARY KEY,
+    Username VARCHAR(50) NOT NULL UNIQUE,
+    PasswordHash VARCHAR(255) NOT NULL,
+    Role VARCHAR(20) CHECK (Role IN ('Admin', 'Employee', 'Customer'))
+    
+);
+
+-- CUSTOMERS TABLE (Linked to Users)
+CREATE TABLE Customers (
+    CustomerID INT AUTO_INCREMENT PRIMARY KEY,
+    FullName VARCHAR(100),
+    Email VARCHAR(100),
+    Phone VARCHAR(20),
+    PassportNumber VARCHAR(30),
+    
+);
+
+-- EMPLOYEES TABLE (Optional but useful for storing employee-specific data)
+CREATE TABLE Employees (
+    EmployeeID INT AUTO_INCREMENT PRIMARY KEY,
+    FullName VARCHAR(100),
+    Position VARCHAR(50),
+    
+);
+
+-- AIRLINES TABLE (Airline data)
+CREATE TABLE Airlines (
+    AirlineID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Country VARCHAR(50),
+    Code VARCHAR(10) UNIQUE
+);
+
+-- FLIGHTS TABLE (Linked to Airlines)
+CREATE TABLE Flights (
+    FlightID INT AUTO_INCREMENT PRIMARY KEY,
+    AirlineID INT,
+    Origin VARCHAR(50),
+    Destination VARCHAR(50),
+    DepartureTime DATETIME,
+    ArrivalTime DATETIME,
+    SeatsAvailable INT CHECK (SeatsAvailable >= 0),
+    Price DECIMAL(10, 2),
+    FOREIGN KEY (AirlineID) REFERENCES Airlines(AirlineID)
+);
+
+-- BOOKINGS TABLE (Linked to Customers and Flights)
+CREATE TABLE Bookings (
+    BookingID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID INT,
+    FlightID INT,
+    SeatNumber VARCHAR(10),
+    Status VARCHAR(20) CHECK (Status IN ('Confirmed', 'Pending', 'Cancelled')),
+    BookingDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    FOREIGN KEY (FlightID) REFERENCES Flights(FlightID),
+    UNIQUE (CustomerID, FlightID)
+);
+
+-- PAYMENTS TABLE (Linked to Bookings)
+CREATE TABLE Payments (
+    PaymentID INT AUTO_INCREMENT PRIMARY KEY,
+    BookingID INT,
+    Amount DECIMAL(10, 2),
+    PaymentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PaymentStatus VARCHAR(20) CHECK (PaymentStatus IN ('Paid', 'Pending', 'Failed')),
+    PaymentMethod VARCHAR(20),
+    FOREIGN KEY (BookingID) REFERENCES Bookings(BookingID)
+);

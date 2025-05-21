@@ -1,0 +1,165 @@
+1 : ViewAllUsers Procedure
+
+DELIMITER $$
+
+CREATE PROCEDURE ViewAllUsers()
+BEGIN
+    SELECT UserID, Username, Role FROM Users;
+END$$
+
+DELIMITER ;
+
+------------------------------------------------------------------------
+
+
+2: Search Flights Procedure
+
+DELIMITER $$
+CREATE PROCEDURE SearchFlights(IN orig VARCHAR(50), IN dest VARCHAR(50))
+BEGIN
+    SELECT * FROM Flights WHERE Origin = orig AND Destination = dest;
+END$$
+DELIMITER ;
+
+
+------------------------------------------------------------------------
+
+
+3: Book Flight Procedure
+
+DELIMITER $$
+CREATE PROCEDURE BookFlight(IN custId INT, IN flightId INT)
+BEGIN
+    INSERT INTO Bookings (CustomerID, FlightID, Status, BookingDate)
+    VALUES (custId, flightId, 'Pending', NOW());
+END$$
+DELIMITER ;
+
+
+------------------------------------------------------------------------
+
+
+4: Get All Bookings Procedure
+ 
+DELIMITER $$
+CREATE PROCEDURE GetAllBookings()
+BEGIN
+    SELECT BookingID, CustomerID, FlightID, Status, BookingDate FROM Bookings;
+END$$
+DELIMITER ;
+
+
+------------------------------------------------------------------------
+
+
+5: Update Booking Status procedure
+
+DELIMITER $$
+CREATE PROCEDURE UpdateBookingStatus(IN bID INT, IN newStatus VARCHAR(20))
+BEGIN
+    UPDATE Bookings SET Status = newStatus WHERE BookingID = bID;
+END$$
+DELIMITER ;
+
+
+------------------------------------------------------------------------
+
+
+6: After insert, payments,and trigger
+
+DELIMITER $$
+CREATE TRIGGER after_insert_payments
+AFTER INSERT ON Payments
+FOR EACH ROW
+BEGIN
+    IF NEW.PaymentStatus = 'Paid' THEN
+        UPDATE Bookings SET Status = 'Confirmed' WHERE BookingID = NEW.BookingID;
+    END IF;
+END$$
+DELIMITER ;
+
+
+------------------------------------------------------------------------
+
+
+7: Automatically Reduce Seats After Booking
+
+DELIMITER $$
+
+CREATE TRIGGER reduce_seats_after_booking
+AFTER INSERT ON Bookings
+FOR EACH ROW
+BEGIN
+    UPDATE Flights
+    SET SeatsAvailable = SeatsAvailable - 1
+    WHERE FlightID = NEW.FlightID;
+END$$
+
+DELIMITER ;
+
+
+------------------------------------------------------------------------
+
+
+8: Restore Seat if Booking Cancelled
+
+DELIMITER $$
+
+CREATE TRIGGER restore_seats_after_cancellation
+AFTER UPDATE ON Bookings
+FOR EACH ROW
+BEGIN
+    IF OLD.Status != 'Cancelled' AND NEW.Status = 'Cancelled' THEN
+        UPDATE Flights
+        SET SeatsAvailable = SeatsAvailable + 1
+        WHERE FlightID = NEW.FlightID;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+------------------------------------------------------------------------
+
+
+9: Calculate Total Payment for a Customer
+
+DELIMITER $$
+
+CREATE FUNCTION TotalCustomerPayments(custID INT)
+RETURNS DECIMAL(10, 2)
+DETERMINISTIC
+BEGIN
+    DECLARE total DECIMAL(10, 2);
+    SELECT SUM(p.Amount)
+    INTO total
+    FROM Payments p
+    JOIN Bookings b ON p.BookingID = b.BookingID
+    WHERE b.CustomerID = custID AND p.PaymentStatus = 'Paid';
+
+    RETURN IFNULL(total, 0);
+END$$
+
+DELIMITER ;
+
+
+------------------------------------------------------------------------
+
+
+10: Get Available Seats for Flight
+
+DELIMITER $$
+
+CREATE FUNCTION GetAvailableSeats(flightID INT)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE seats INT;
+    SELECT SeatsAvailable INTO seats
+    FROM Flights
+    WHERE FlightID = flightID;
+
+    RETURN seats;
+END$$
+
+DELIMITER ;

@@ -1,0 +1,73 @@
+INSERT INTO Users (Username, PasswordHash, Role) VALUES
+('admin1', 'adminpass', 'Admin'),
+('employee1', 'empass1', 'Employee'),
+('employee2', 'empass2', 'Employee'),
+('cust1', 'custpass1', 'Customer');
+
+
+INSERT INTO Customers ( FullName, Email, Phone, PassportNumber) VALUES
+( 'Ali Veli', 'ali@example.com', '5012345678', 'P123456'),
+( 'Ahmet Yilmaz', 'ahmet@example.com', '5012345679', 'P123457'),
+( 'Ayse Kaya', 'ayse@example.com', '5012345680', 'P123458'),
+( 'Fatma Demir', 'fatma@example.com', '5012345681', 'P123459'),
+( 'John Smith', 'john@example.com', '5012345682', 'P123460'),
+( 'Jane Doe', 'jane@example.com', '5012345683', 'P123461'),
+( 'Emily White', 'emily@example.com', '5012345684', 'P123462'),
+( 'Carlos Ruiz', 'carlos@example.com', '5012345685', 'P123463');
+
+
+INSERT INTO Employees ( FullName, Position) VALUES
+( 'Murat Aksu', 'Manager'),
+( 'Selin Karaca', 'Support'),
+( 'Zeynep Turan', 'Operations'),
+( 'David Brown', 'Sales'),
+( 'Mehmet Yildiz', 'Agent'),
+( 'Linda Grey', 'Assistant'),
+( 'Okan Polat', 'Supervisor'),
+( 'Ali Can', 'Administrator');
+
+
+
+INSERT INTO Airlines (Name, Country, Code) VALUES
+('Turkish Airlines', 'Turkey', 'TK'),
+('Qatar Airways', 'Qatar', 'QR'),
+('Emirates', 'UAE', 'EK'),
+('Pegasus Airlines', 'Turkey', 'PC'),
+('Lufthansa', 'Germany', 'LH'),
+('Delta Airlines', 'USA', 'DL'),
+('British Airways', 'UK', 'BA'),
+('Air France', 'France', 'AF');
+
+
+INSERT INTO Flights (AirlineID, Origin, Destination, DepartureTime, ArrivalTime, SeatsAvailable, Price) VALUES
+(1, 'Istanbul', 'Ankara', '2025-06-01 08:00:00', '2025-06-01 10:00:00', 150, 250.00),
+(2, 'Doha', 'London', '2025-06-02 12:00:00', '2025-06-02 18:00:00', 200, 480.00),
+(3, 'Dubai', 'Istanbul', '2025-06-03 09:00:00', '2025-06-03 13:00:00', 180, 300.00),
+(4, 'Lefkosa', 'Izmir', '2025-06-05 07:00:00', '2025-06-05 09:30:00', 130, 190.00),
+(5, 'Berlin', 'Paris', '2025-06-06 15:00:00', '2025-06-06 17:00:00', 170, 220.00),
+(6, 'New York', 'Los Angeles', '2025-06-07 08:00:00', '2025-06-07 12:00:00', 160, 400.00),
+(7, 'London', 'Tokyo', '2025-06-08 20:00:00', '2025-06-09 10:00:00', 200, 600.00),
+(8, 'Paris', 'Rome', '2025-06-10 09:00:00', '2025-06-10 11:00:00', 140, 210.00);
+
+
+INSERT INTO Bookings (CustomerID, FlightID, SeatNumber, Status, BookingDate) VALUES
+(1, 1, '12A', 'Confirmed', '2025-05-01'),
+(2, 2, '14B', 'Pending', '2025-05-02'),
+(3, 3, '16C', 'Confirmed', '2025-05-03'),
+(4, 4, '11D', 'Cancelled', '2025-05-04'),
+(5, 5, '20A', 'Confirmed', '2025-05-05'),
+(6, 6, '18F', 'Confirmed', '2025-05-06'),
+(7, 7, '19E', 'Pending', '2025-05-07'),
+(8, 8, '21C', 'Confirmed', '2025-05-08');
+
+
+INSERT INTO Payments (BookingID, Amount, PaymentDate, PaymentStatus, PaymentMethod) VALUES
+(1, 250.00, '2025-05-01', 'Paid', 'Credit Card'),
+(2, 480.00, '2025-05-02', 'Pending', 'PayPal'),
+(3, 300.00, '2025-05-03', 'Paid', 'Bank Transfer'),
+(4, 190.00, '2025-05-04', 'Failed', 'Credit Card'),
+(5, 220.00, '2025-05-05', 'Paid', 'PayPal'),
+(6, 400.00, '2025-05-06', 'Paid', 'Credit Card'),
+(7, 600.00, '2025-05-07', 'Pending', 'PayPal'),
+(8, 210.00, '2025-05-08', 'Paid', 'Credit Card');
+
